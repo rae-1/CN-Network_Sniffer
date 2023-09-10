@@ -19,16 +19,16 @@ int main(){
         return 1;
     }
 
-    unsigned char *buffer = (unsigned char *) malloc(65536); //to receive data
+    unsigned char *buffer = (unsigned char *) malloc(65536);
     memset(buffer, 0, 65536);
     
     struct sockaddr saddr;
     int saddr_len = sizeof(saddr);
     
     int packet_count = 0;
-    while(true){
-        //Receive a network packet and copy in to buffer
-	
+    while(true)
+    {
+    	packet_count++;
         int buflen = recvfrom(raw_socket,buffer, 65536, 0, &saddr, (socklen_t *)&saddr_len);
         if(buflen < 0){
             printf("Error in reading recvfrom function\n");
@@ -46,20 +46,22 @@ int main(){
         source.sin_addr.s_addr  = ip -> saddr;
         dest.sin_addr.s_addr    = ip -> daddr;
 
+
+        //IP info
         printf("IP info:\n");
         printf("\t|-Source IP : %s\n     ", inet_ntoa(source.sin_addr));
         printf("\t|-Destination IP : %s\n", inet_ntoa(dest.sin_addr));
 
-        //Extracting the Port info:
         iphdrlen = (ip -> ihl) * 4;
-        struct tcphdr *tcp=(struct tcphdr*)(buffer + iphdrlen + sizeof(struct ethhdr));
-	
-	printf("Extracting TCP Port info:\n");
+
+        //Port info
+        struct tcphdr *tcp = (struct tcphdr*)(buffer + iphdrlen + sizeof(struct ethhdr));
+	    printf("TCP Port info:\n");
         printf("\t|-Source Port : %d\n     " , ntohs(tcp -> source));
         printf("\t|-Destination Port : %d\n" , ntohs(tcp -> dest));
-	printf("\t|-Number of packets: %d\n", packet_count);
+	    printf("\t|-Number of packets: %d\n", packet_count);
 	
-	packet_count++;
+	    
     }
 
     free(buffer);

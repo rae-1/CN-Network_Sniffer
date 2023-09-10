@@ -75,16 +75,8 @@ int main(){
         }
         
         struct ethhdr *eth = (struct ethhdr *)(buffer);
-
-        unsigned short iphdrlen;
         struct iphdr *ip = (struct iphdr*)(buffer + sizeof(struct ethhdr));
-
-        struct sockaddr_in source, dest;
-        memset(&source  , 0, sizeof(source));
-        memset(&dest    , 0, sizeof(dest));
-        source.sin_addr.s_addr  = ip -> saddr;
-        dest.sin_addr.s_addr    = ip -> daddr;
-
+        unsigned short iphdrlen;
         iphdrlen = (ip -> ihl) * 4;
         struct tcphdr *tcp=(struct tcphdr*)(buffer + iphdrlen + sizeof(struct ethhdr));
         
@@ -92,10 +84,9 @@ int main(){
         int pid  = getID(port);
         printf("Source Port : %d, and PID : %d\n" , port, pid);
 	
-	mapping[count].port_number = port;
-	mapping[count].pid = pid;
-	count++;
-
+        mapping[count].port_number = port;
+        mapping[count].pid = pid;
+        count++;
     }
 
 
@@ -114,7 +105,7 @@ int main(){
 		}
 		
 		if(found == false){
-			printf("No match found");
+			printf("No match found\n");
 		}
 	}
 
